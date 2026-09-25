@@ -1,0 +1,8 @@
+   services:
+     web:
+       build: .
+       image: lucas0793/projeto-devops:latest
+       container_name: projeto-devops
+       ports:
+         - "8080:80"
+       restart: unless-stopped

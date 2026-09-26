@@ -1,0 +1,13 @@
+# Certbot
+certbot/
+
+# Arquivos de backup
+*.save
+
+# Chaves e certificados
+*.key
+*.pem
+
+# Variaveis de ambiente
+.env
+

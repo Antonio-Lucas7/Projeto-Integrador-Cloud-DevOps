@@ -4,5 +4,11 @@
        image: lucas0793/projeto-devops:latest
        container_name: projeto-devops
        ports:
-         - "8080:80"
+         - "80:80"
+         - "443:443"
+       volumes:
+         - ./certbot/www:/var/www/certbot
+         - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+         - /etc/letsencrypt:/etc/letsencrypt:ro
        restart: unless-stopped
+

@@ -12,3 +12,15 @@
          - /etc/letsencrypt:/etc/letsencrypt:ro
        restart: unless-stopped
 
+     monitor: 
+       image: louislam/uptime-kuma:2
+       container_name: uptime-kuma
+       ports:
+         - "127.0.0.1:3001:3001"
+       volumes:
+         - uptime-kuma-data:/app/data
+       restart: unless-stopped
+
+   volumes:
+     uptime-kuma-data:
+

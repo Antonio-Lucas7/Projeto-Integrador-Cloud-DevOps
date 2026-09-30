@@ -4,6 +4,8 @@
 
 - Antonio Lucas Florêncio da Silva
 - Matheus Souza Talon
+- José Felipe Alvez Izel
+- Liandra Cristine Oliveira Prado
 
 ## Objetivo
 

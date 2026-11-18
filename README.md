@@ -569,8 +569,6 @@ Computador de gerenciamento
 
 ## Pré-requisitos
 
-## Pré-requisitos
-
 **No computador de gerenciamento:**
 
 - Linux ou WSL Ubuntu;
@@ -612,8 +610,6 @@ servidor_linux ansible_host=IP_DO_SERVIDOR ansible_user=ubuntu ansible_ssh_priva
 
 ## Execução da automação
 
-## Execução da automação
-
 A partir da raiz do repositório, executar os comandos abaixo.
 
 **1. Verificar a conexão com o servidor:**
@@ -648,8 +644,6 @@ Esse playbook realiza:
 - Atualização do código a partir do GitHub;
 - Criação dos diretórios necessários do Certbot;
 - Implantação do serviço web utilizando Docker Compose.
-
-## Validação
 
 ## Validação
 

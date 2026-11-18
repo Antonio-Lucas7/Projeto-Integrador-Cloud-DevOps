@@ -1,0 +1,34 @@
+---
+- name: Atualizar e implantar aplicacao
+  hosts: servidores
+  become: true
+
+  tasks:
+    - name: Atualizar codigo do projeto
+      ansible.builtin.git:
+        repo: https://github.com/Antonio-Lucas7/Projeto-Integrador-Cloud-DevOps.git
+        dest: /home/ubuntu/Projeto-Integrador-Cloud-DevOps
+        version: main
+        update: true
+        force: false
+      become_user: ubuntu
+
+    - name: Criar diretorios do Certbot
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+      loop:
+        - /home/ubuntu/Projeto-Integrador-Cloud-DevOps/certbot/conf
+        - /home/ubuntu/Projeto-Integrador-Cloud-DevOps/certbot/www
+
+    - name: Implantar aplicacao com Docker Compose
+      community.docker.docker_compose_v2:
+        project_src: /home/ubuntu/Projeto-Integrador-Cloud-DevOps
+        state: present
+        build: always
+        services:
+          - web
+      become_user: ubuntu

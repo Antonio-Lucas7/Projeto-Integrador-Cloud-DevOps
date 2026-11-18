@@ -1,0 +1,33 @@
+---
+- name: Preparar servidor Linux
+  hosts: servidores
+  become: true
+
+  tasks:
+    - name: Atualizar cache dos pacotes
+      ansible.builtin.command: apt-get update
+      changed_when: false
+
+    - name: Instalar dependencias do servidor e Docker
+      ansible.builtin.command:
+        argv:
+          - apt-get
+          - install
+          - -y
+          - ca-certificates
+          - curl
+          - git
+          - docker.io
+          - docker-compose-plugin
+
+    - name: Garantir que o Docker esteja iniciado
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Adicionar usuario ubuntu ao grupo Docker
+      ansible.builtin.user:
+        name: ubuntu
+        groups: docker
+        append: true

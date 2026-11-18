@@ -569,63 +569,78 @@ Computador de gerenciamento
 
 ## Pré-requisitos
 
-No computador de gerenciamento:
+## Pré-requisitos
+
+**No computador de gerenciamento:**
 
 - Linux ou WSL Ubuntu;
 - Python 3;
-- Ansible instalado;
+- Ansible Core instalado;
+- Coleção `community.docker` instalada;
+- Git instalado;
 - Acesso SSH ao servidor;
-- Chave privada SSH configurada;
-- Coleção community.docker instalada.
+- Chave privada SSH configurada.
 
-No servidor gerenciado:
+**No servidor gerenciado:**
 
-- Ubuntu Linux;
-- Python 3.9 ou superior para a versão do Ansible utilizada;
+- Ubuntu Linux 20.04 LTS ou compatível;
+- Python 3.9 ou superior disponível em `/usr/bin/python3.9`;
 - Acesso SSH;
-- Permissão para executar comandos administrativos com sudo.
+- Usuário com permissão para executar comandos administrativos com sudo;
+- Acesso à internet para baixar pacotes, imagens Docker e código do GitHub.
+
+**Observação:** o playbook `setup-server.yml` verifica a existência do Python 3.9, mas não realiza sua instalação automática. Portanto, essa dependência deve estar disponível antes da execução da automação.
 
 ## Configuração do inventário
 
-O arquivo `ansible/inventory/hosts.ini` identifica o servidor que será gerenciado.
+O Ansible utiliza um arquivo de inventário para identificar os servidores gerenciados e estabelecer a conexão SSH.
 
-Exemplo de configuração:
+O arquivo `ansible/inventory/hosts.ini` contém um modelo genérico de configuração.
+
+Para configurar o ambiente local, crie uma cópia:
+
+```bash
+cp ansible/inventory/hosts.ini ansible/inventory/hosts-local.ini
+```
+
+Edite o arquivo `hosts-local.ini` com as informações do servidor:
 
 ```ini
 [servidores]
 servidor_linux ansible_host=IP_DO_SERVIDOR ansible_user=ubuntu ansible_ssh_private_key_file=CAMINHO_DA_CHAVE ansible_python_interpreter=/usr/bin/python3.9
 ```
 
-Os valores devem ser substituídos pelas informações do ambiente utilizado.
+## Execução da automação
 
 ## Execução da automação
 
-A partir da raiz do repositório, executar:
+A partir da raiz do repositório, executar os comandos abaixo.
 
 **1. Verificar a conexão com o servidor:**
 
 ```bash
-ansible servidores -m ping
+ansible -i ansible/inventory/hosts-local.ini servidores -m ping
 ```
 
 **2. Preparar o servidor Linux:**
 
 ```bash
-ansible-playbook ansible/playbooks/setup-server.yml
+ansible-playbook -i ansible/inventory/hosts-local.ini ansible/playbooks/setup-server.yml
 ```
 
 Esse playbook realiza:
 
+- Verificação do Python 3.9;
+- Coleta de informações do servidor;
 - Atualização do cache de pacotes;
-- Instalação de dependências;
-- Instalação do Docker e Docker Compose;
+- Instalação de dependências e Docker;
 - Inicialização e habilitação do serviço Docker;
-- Adição do usuário ubuntu ao grupo Docker.
+- Adição do usuário `ubuntu` ao grupo Docker.
 
 **3. Implantar a aplicação:**
 
 ```bash
-ansible-playbook ansible/playbooks/deploy-app.yml
+ansible-playbook -i ansible/inventory/hosts-local.ini ansible/playbooks/deploy-app.yml
 ```
 
 Esse playbook realiza:
@@ -636,35 +651,47 @@ Esse playbook realiza:
 
 ## Validação
 
-Após a execução dos playbooks, é possível verificar os serviços utilizando:
+## Validação
 
-**Verificar os containers:**
+Após a execução dos playbooks, é possível verificar o funcionamento da aplicação e dos serviços implantados.
+
+**1. Verificar os containers no servidor:**
 
 ```bash
-docker compose ps
+docker ps
 ```
 
-**Verificar a resposta HTTP:**
+**2. Verificar a resposta HTTP:**
 
 ```bash
 curl -I http://127.0.0.1
 ```
 
-**Verificar a resposta HTTPS:**
+A resposta esperada é `301 Moved Permanently`, indicando o redirecionamento para HTTPS.
+
+**3. Verificar a resposta HTTPS:**
 
 ```bash
-curl -I https://127.0.0.1
+curl -I https://projeto-devops-antonio.duckdns.org
 ```
 
-A aplicação deve responder com redirecionamento HTTP para HTTPS e disponibilizar a página através de HTTPS.
+A resposta esperada é `200 OK`, confirmando que a aplicação está acessível através de HTTPS.
 
-A validação do certificado deve ser realizada sem desabilitar sua verificação.
+A validação do certificado SSL/TLS deve ser realizada sem desabilitar sua verificação.
+
+**Observação:** os testes devem ser executados no servidor Linux gerenciado, e o domínio deve estar apontando corretamente para o endereço IP público do servidor.
 
 ## Observações sobre HTTPS
 
-A implantação HTTPS depende da existência dos certificados SSL/TLS do Let's Encrypt no servidor, armazenados em `/etc/letsencrypt`.
+A implantação HTTPS depende da existência de certificados SSL/TLS válidos emitidos pelo Let's Encrypt e armazenados no servidor em `/etc/letsencrypt`.
 
-A automação apresentada cria os diretórios necessários do Certbot, mas não realiza a emissão de novos certificados.
+O playbook `deploy-app.yml` cria os diretórios necessários para o Certbot, mas não realiza a instalação do Certbot nem a emissão ou renovação automática dos certificados.
+
+Para que o HTTPS funcione corretamente, o domínio deve estar configurado para apontar para o endereço IP público do servidor, e os certificados devem estar previamente disponíveis no ambiente.
+
+A configuração atual utiliza o domínio:
+
+`projeto-devops-antonio.duckdns.org`
 
 ## Versionamento
 

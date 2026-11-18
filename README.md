@@ -489,3 +489,185 @@ Máquina Virtual Ubuntu
    A aplicação está hospedada em uma máquina virtual da Oracle Cloud Infrastructure (OCI), utilizando Docker e Nginx.
    O domínio público é fornecido pelo DuckDNS e o acesso HTTPS é protegido por certificado SSL/TLS do Let's Encrypt.
 
+
+
+
+# N2 — Automação e reprodução de ambientes com Ansible
+
+## Objetivo
+
+A segunda etapa do projeto utiliza Ansible para automatizar a preparação de um servidor Linux e a implantação da aplicação desenvolvida na N1.
+
+A automação permite executar tarefas de configuração, instalação de dependências e implantação dos serviços Docker de maneira organizada e reproduzível.
+
+## Tecnologias utilizadas
+
+- Ansible
+- Ansible Core
+- Ubuntu Linux
+- Python
+- Docker
+- Docker Compose
+- Git
+- GitHub
+
+## Estrutura da automação
+
+```text
+Projeto-Integrador-Cloud-DevOps/
+├── ansible/
+│   ├── inventory/
+│   │   └── hosts.ini
+│   └── playbooks/
+│       ├── setup-server.yml
+│       └── deploy-app.yml
+├── ansible.cfg
+├── Dockerfile
+├── docker-compose.yaml
+└── README.md
+```
+
+## Descrição dos arquivos
+
+- ansible.cfg — configura os parâmetros padrão do Ansible e o caminho do inventário.
+- hosts.ini — define os servidores gerenciados e suas informações de conexão.
+- setup-server.yml — atualiza os pacotes, instala dependências, configura o Docker e habilita seu serviço.
+- deploy-app.yml — atualiza o código do projeto, cria os diretórios necessários do Certbot e implanta a aplicação utilizando Docker Compose.
+
+## Arquitetura da automação
+
+```text
+Computador de gerenciamento
+          |
+          v
+        Ansible
+          |
+          v
+      Conexão SSH
+          |
+          v
+    Servidor Linux
+          |
+          v
+   setup-server.yml
+          |
+          v
+ Instalação do Docker
+          |
+          v
+    deploy-app.yml
+          |
+          v
+   Git + Docker Compose
+          |
+          v
+   Aplicação implantada
+          |
+          v
+      HTTP / HTTPS
+```
+
+## Pré-requisitos
+
+No computador de gerenciamento:
+
+- Linux ou WSL Ubuntu;
+- Python 3;
+- Ansible instalado;
+- Acesso SSH ao servidor;
+- Chave privada SSH configurada;
+- Coleção community.docker instalada.
+
+No servidor gerenciado:
+
+- Ubuntu Linux;
+- Python 3.9 ou superior para a versão do Ansible utilizada;
+- Acesso SSH;
+- Permissão para executar comandos administrativos com sudo.
+
+## Configuração do inventário
+
+O arquivo `ansible/inventory/hosts.ini` identifica o servidor que será gerenciado.
+
+Exemplo de configuração:
+
+```ini
+[servidores]
+servidor_linux ansible_host=IP_DO_SERVIDOR ansible_user=ubuntu ansible_ssh_private_key_file=CAMINHO_DA_CHAVE ansible_python_interpreter=/usr/bin/python3.9
+```
+
+Os valores devem ser substituídos pelas informações do ambiente utilizado.
+
+## Execução da automação
+
+A partir da raiz do repositório, executar:
+
+**1. Verificar a conexão com o servidor:**
+
+```bash
+ansible servidores -m ping
+```
+
+**2. Preparar o servidor Linux:**
+
+```bash
+ansible-playbook ansible/playbooks/setup-server.yml
+```
+
+Esse playbook realiza:
+
+- Atualização do cache de pacotes;
+- Instalação de dependências;
+- Instalação do Docker e Docker Compose;
+- Inicialização e habilitação do serviço Docker;
+- Adição do usuário ubuntu ao grupo Docker.
+
+**3. Implantar a aplicação:**
+
+```bash
+ansible-playbook ansible/playbooks/deploy-app.yml
+```
+
+Esse playbook realiza:
+
+- Atualização do código a partir do GitHub;
+- Criação dos diretórios necessários do Certbot;
+- Implantação do serviço web utilizando Docker Compose.
+
+## Validação
+
+Após a execução dos playbooks, é possível verificar os serviços utilizando:
+
+**Verificar os containers:**
+
+```bash
+docker compose ps
+```
+
+**Verificar a resposta HTTP:**
+
+```bash
+curl -I http://127.0.0.1
+```
+
+**Verificar a resposta HTTPS:**
+
+```bash
+curl -I https://127.0.0.1
+```
+
+A aplicação deve responder com redirecionamento HTTP para HTTPS e disponibilizar a página através de HTTPS.
+
+A validação do certificado deve ser realizada sem desabilitar sua verificação.
+
+## Observações sobre HTTPS
+
+A implantação HTTPS depende da existência dos certificados SSL/TLS do Let's Encrypt no servidor, armazenados em `/etc/letsencrypt`.
+
+A automação apresentada cria os diretórios necessários do Certbot, mas não realiza a emissão de novos certificados.
+
+## Versionamento
+
+Os arquivos de automação Ansible foram adicionados ao mesmo repositório Git utilizado na primeira etapa do projeto.
+
+Dessa forma, o código da aplicação, a infraestrutura e os playbooks de automação permanecem centralizados no mesmo repositório.

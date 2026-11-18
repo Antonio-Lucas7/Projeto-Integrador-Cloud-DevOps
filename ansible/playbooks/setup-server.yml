@@ -1,9 +1,18 @@
+
 ---
 - name: Preparar servidor Linux
   hosts: servidores
   become: true
+  gather_facts: false
 
   tasks:
+    - name: Verificar Python 3.9
+      ansible.builtin.raw: /usr/bin/python3.9 --version
+      changed_when: false
+
+    - name: Coletar informacoes do servidor
+      ansible.builtin.setup:
+
     - name: Atualizar cache dos pacotes
       ansible.builtin.command: apt-get update
       changed_when: false

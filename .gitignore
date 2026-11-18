@@ -11,3 +11,5 @@ certbot/
 # Variaveis de ambiente
 .env
 
+# Configurações locais do Ansible
+ansible/inventory/hosts-local.ini

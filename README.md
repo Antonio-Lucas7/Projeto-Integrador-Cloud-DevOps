@@ -582,12 +582,22 @@ Computador de gerenciamento
 **No servidor gerenciado:**
 
 - Ubuntu Linux 20.04 LTS ou compatível;
-- Python 3.9 ou superior disponível em `/usr/bin/python3.9`;
+- Python 3.9 disponível em `/usr/bin/python3.9`;
 - Acesso SSH;
 - Usuário com permissão para executar comandos administrativos com sudo;
 - Acesso à internet para baixar pacotes, imagens Docker e código do GitHub.
 
 **Observação:** o playbook `setup-server.yml` verifica a existência do Python 3.9, mas não realiza sua instalação automática. Portanto, essa dependência deve estar disponível antes da execução da automação.
+
+### Instalação das dependências do Ansible
+
+Antes de executar os playbooks, instale a coleção `community.docker`, necessária para utilizar os módulos de gerenciamento do Docker.
+
+Execute no terminal:
+
+```bash
+ansible-galaxy collection install community.docker
+```
 
 ## Configuração do inventário
 
@@ -686,6 +696,8 @@ Para que o HTTPS funcione corretamente, o domínio deve estar configurado para a
 A configuração atual utiliza o domínio:
 
 `projeto-devops-antonio.duckdns.org`
+
+**Importante:** a automação foi executada e validada no servidor já utilizado na primeira etapa do projeto. A reprodução completa em uma VM limpa ainda depende da configuração prévia dos certificados SSL/TLS e das demais dependências necessárias.
 
 ## Versionamento
 

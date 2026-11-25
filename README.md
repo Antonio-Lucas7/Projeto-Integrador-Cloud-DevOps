@@ -156,10 +156,10 @@ Máquina Virtual Ubuntu
    Portas utilizadas:
 
    ```
-      Porta	|  Protocolo  |  Finalidade
-      22	   |     TCP	  |   Acesso SSH à máquina virtual
-      80	   |     TCP     |   Acesso HTTP
-      443	|     TCP	  |   Acesso HTTPS
+      Porta | Protocolo   | Finalidade
+      22    |   TCP       | Acesso SSH à máquina virtual
+      80    |   TCP       | Acesso HTTP
+      443   |   TCP       | Acesso HTTPS
    ```
 
    A porta 3001 utilizada pelo Uptime Kuma não é exposta diretamente à Internet. O serviço está vinculado ao endereço local:

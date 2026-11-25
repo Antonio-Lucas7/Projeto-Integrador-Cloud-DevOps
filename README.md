@@ -67,6 +67,7 @@ Máquina Virtual Ubuntu
 
 ## Estrutura de pastas
 
+```
    Projeto-Integrador-Cloud-DevOps/
    ├── .github/
    │   └── workflows/
@@ -79,6 +80,7 @@ Máquina Virtual Ubuntu
    ├── Dockerfile
    ├── docker-compose.yaml
    └── README.md
+```
 
 ## Descrição dos principais arquivos
 
@@ -128,6 +130,7 @@ Máquina Virtual Ubuntu
 
 ## Containers utilizados
 
+```
    projeto-devops
    └── Nginx
        ├── HTTP :80
@@ -135,6 +138,7 @@ Máquina Virtual Ubuntu
 
    uptime-kuma
    └── Monitoramento :3001
+```
 
 # Cloud Computing
 
@@ -150,11 +154,13 @@ Máquina Virtual Ubuntu
    - Internet Gateway: igw-projeto-devops
 
    Portas utilizadas:
+
+   ```
       Porta	|  Protocolo  |  Finalidade
       22	   |     TCP	  |   Acesso SSH à máquina virtual
       80	   |     TCP     |   Acesso HTTP
       443	|     TCP	  |   Acesso HTTPS
-
+   ```
 
    A porta 3001 utilizada pelo Uptime Kuma não é exposta diretamente à Internet. O serviço está vinculado ao endereço local:
       127.0.0.1:3001
@@ -167,6 +173,7 @@ Máquina Virtual Ubuntu
 
 ## Fluxo do DNS
 
+```
    Usuário
       │
       ▼
@@ -186,6 +193,7 @@ Máquina Virtual Ubuntu
       │
       ▼
    Aplicação Docker
+```
 
    Dessa forma, o usuário não precisa acessar diretamente o endereço IP da máquina virtual, podendo utilizar o domínio configurado.
 
@@ -204,6 +212,8 @@ Máquina Virtual Ubuntu
    Os certificados são disponibilizados ao container Nginx através do Docker Compose.
    Redirecionamento HTTP → HTTPS
    O Nginx está configurado para redirecionar automaticamente as requisições HTTP para HTTPS.
+
+   ```
       HTTP :80
          │
          ▼
@@ -214,6 +224,7 @@ Máquina Virtual Ubuntu
          │
          ▼
       Aplicação
+   ```
 
 ## Aplicação
 
@@ -240,6 +251,7 @@ Máquina Virtual Ubuntu
 
 ## Fluxo da pipeline
 
+```
    Git Push
       │
       ▼
@@ -262,6 +274,7 @@ Máquina Virtual Ubuntu
       │
       ▼
    Aplicação atualizada
+```
 
 ## Etapas
 
@@ -322,12 +335,15 @@ Máquina Virtual Ubuntu
 # Containers
 
    A infraestrutura possui os seguintes containers principais:
+
+```
    projeto-devops
    └── Nginx
        └── Aplicação web
 
    uptime-kuma
    └── Monitoramento da aplicação
+```
 
    O monitoramento permite verificar continuamente se a aplicação está respondendo através de HTTPS.
 
@@ -339,11 +355,13 @@ Máquina Virtual Ubuntu
 
    A máquina virtual possui regras de entrada configuradas para permitir somente as portas necessárias:
 
+   ```
       Porta	 |  Protocolo   |  Finalidade
       22	    |    TCP	    |    Acesso SSH
       80  	 |    TCP       |    HTTP
       443	 |    TCP	    |    HTTPS
-   
+   ```
+
    A porta 3001, utilizada pelo Uptime Kuma, não é liberada para acesso externo. O serviço está vinculado somente ao endereço:
       127.0.0.1:3001
 
@@ -389,6 +407,8 @@ Máquina Virtual Ubuntu
    O deploy da aplicação é realizado automaticamente através da pipeline de CI/CD do GitHub Actions.
    O processo ocorre após um push na branch main.
    Processo de implantação
+
+   ```
       Desenvolvimento
             │
             ▼
@@ -415,7 +435,8 @@ Máquina Virtual Ubuntu
                     │
                     ▼
               Aplicação
-   
+   ```
+
    Durante o deploy, a máquina virtual executa:
       git pull origin main
    

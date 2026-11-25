@@ -356,10 +356,10 @@ Máquina Virtual Ubuntu
    A máquina virtual possui regras de entrada configuradas para permitir somente as portas necessárias:
 
    ```
-      Porta	 |  Protocolo   |  Finalidade
-      22	    |    TCP	    |    Acesso SSH
-      80  	 |    TCP       |    HTTP
-      443	 |    TCP	    |    HTTPS
+      Porta   |   Protocolo   |   Finalidade
+      22      |      TCP      |   Acesso SSH
+      80      |      TCP      |   HTTP
+      443     |      TCP      |   HTTPS
    ```
 
    A porta 3001, utilizada pelo Uptime Kuma, não é liberada para acesso externo. O serviço está vinculado somente ao endereço:
